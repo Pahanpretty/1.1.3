@@ -8,27 +8,25 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
+public class UserDaoJDBCImpl implements UserDao {
 
-    Connection connection = getConnection();
+    private static final Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
 
     }
 
-    public void createUsersTable() throws SQLException {
-        String sql = "CREATE TABLE IF NOT EXISTS userstable " +
-                "(id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), lastName VARCHAR(45), age INT)";
+    public void createUsersTable() {
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
-
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS userstable " +
+                    "(id INT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(45), lastName VARCHAR(45), age INT)");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
     }
 
-    public void dropUsersTable() throws SQLException {
+    public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS userstable";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
@@ -57,29 +55,17 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
 
 
-    public void removeUserById(long id) throws SQLException {
-        PreparedStatement preparedStatement = null;
-        String sql = "DELETE FROM userstable WHERE id = ?";
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+    public void removeUserById(long id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM userstable WHERE id = ?")) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-                ;
             }
-            if (connection != null) {
-                connection.close();
-            }
-
         }
-    }
 
-    public List<User> getAllUsers() throws SQLException {
+    public List<User> getAllUsers() {
         List<User> UserList = new ArrayList<>();
         String sql = "SELECT * FROM userstable";
         try (Statement statement = connection.createStatement()) {
@@ -98,7 +84,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         return UserList;
     }
 
-    public void cleanUsersTable() throws SQLException {
+    public void cleanUsersTable() {
         String sql = "TRUNCATE TABLE userstable";
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);

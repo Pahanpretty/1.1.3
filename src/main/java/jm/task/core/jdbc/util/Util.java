@@ -9,16 +9,18 @@ public class Util {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/biba";
     private static final String DB_USERNAME = "root";
     private static final String DB_PASSWORD = "farcry1996";
+    private static Util instance = null;
 
-    public Connection getConnection() {
+    public static Connection getConnection() {
         Connection connection = null;
         try {
-            Class.forName(DB_DRIVER);
+
             connection = DriverManager.getConnection(DB_URL,DB_USERNAME,DB_PASSWORD);
             System.out.println("Connection done");
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch ( SQLException e) {
             throw new RuntimeException(e);
         }
         return connection;
     }
+
 }
