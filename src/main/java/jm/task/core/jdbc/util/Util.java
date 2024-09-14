@@ -14,7 +14,7 @@ public class Util {
     private static final String DB_PASSWORD = "farcry1996";
     private static SessionFactory sessionFactory = null;
 
-    public static SessionFactory getConnection() {
+    public static SessionFactory getSessionFactory() {
 
         try {
             Configuration configuration = new Configuration()
@@ -23,10 +23,7 @@ public class Util {
                     .setProperty("hibernate.connection.username", DB_USERNAME)
                     .setProperty("hibernate.connection.password", DB_PASSWORD)
                     .setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect")
-                    .addAnnotatedClass(User.class)
-                    .setProperty("hibernate.c3p0.min_size","5")
-                    .setProperty("hibernate.c3p0.max_size","200")
-                    .setProperty("hibernate.c3p0.max_statements","200");
+                    .addAnnotatedClass(User.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties()).build();
